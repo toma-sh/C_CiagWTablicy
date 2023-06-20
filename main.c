@@ -1,99 +1,103 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/*deklaracja funkcji wypelnijTablice*/
-void wypelnijTablice(int *tab, int rozmiar);
+/* Function: fillArray
+   Fills an array with user-input values.
 
-/*deklaracja funkcji znajdzCiag*/
-void znajdzCiag(int *tab, int rozmiar);
+   Parameters:
+   - arr: Pointer to the array.
+   - size: Size of the array.
+*/
+void fillArray(int *arr, int size);
 
-int main(void) /*funkcja glowna*/
+/* Function: findSequence
+   Finds the longest increasing subsequence in an array.
+
+   Parameters:
+   - arr: Pointer to the array.
+   - size: Size of the array.
+*/
+void findSequence(int *arr, int size);
+
+int main(void)
 {
-    int rozmiar;
-    int *tab;
+    int size;
+    int *arr;
 
-    /*wyswietlenie komunikatu dla uzytkownika*/
-    printf("Podaj rozmiar tablicy: ");
+    printf("Enter the size of the array: ");
+    scanf("%d", &size);
 
-    /*pobranie rozmiaru tablicy*/
-    scanf("%d", &rozmiar);
+    arr = (int *)malloc(sizeof(int) * size);
 
-    /*rezerwacja miejsca na tablice jednowymiarowa*/
-    tab = (int *)malloc(sizeof(int) * rozmiar);
+    fillArray(arr, size);
+    findSequence(arr, size);
 
-    /*wywolanie funkcji*/
-    wypelnijTablice(tab, rozmiar);
-    znajdzCiag(tab, rozmiar);
-
-    free(tab); /*zwolnienie miejsca w pamieci zarezerwowanego przez tablice*/
+    free(arr);
 
     return 0;
 }
 
-/*definicja funkcji wypelniajacej tablice*/
-void wypelnijTablice(int *tab, int rozmiar)
+void fillArray(int *arr, int size)
 {
     int i;
 
-    for (i = 0; i < rozmiar; i++)
+    for (i = 0; i < size; i++)
     {
-        printf("Podaj element nr %d:\t", i);
-        scanf("%d", &tab[i]);
+        printf("Enter element %d: ", i);
+        scanf("%d", &arr[i]);
     }
 
-    /*wypisanie tablicy na ekranie*/
-    printf("\nCiag: ");
-    for (i = 0; i < rozmiar; i++)
+    printf("\nArray: ");
+    for (i = 0; i < size; i++)
     {
-        printf("%d,", tab[i]);
+        printf("%d,", arr[i]);
     }
     printf("\n");
 }
 
-/*definicja funkcji znajdujacej najdluzszy ciag w tablicy*/
-void znajdzCiag(int *tab, int rozmiar)
+void findSequence(int *arr, int size)
 {
-    /*deklaracja struktury ciag*/
-    struct ciag
+    /* Structure declaration for sequence */
+    struct sequence
     {
-        int poczatek;
-        int koniec;
-        int dlugosc;
+        int start;
+        int end;
+        int length;
     };
 
-    int i, poc, kon, dl;
+    int i, start, end, length;
 
-    struct ciag podciag;
+    struct sequence subsequence;
 
-    /*inicjalizacja zmienych*/
-    podciag.dlugosc = 0;
-    podciag.koniec = 0;
-    podciag.poczatek = 0;
-    poc = 0;
-    kon = 0;
+    /* Initialization of variables */
+    subsequence.length = 0;
+    subsequence.end = 0;
+    subsequence.start = 0;
+    start = 0;
+    end = 0;
 
-    /*petla wyszukujaca ciagu*/
-    for (i = 0; i < rozmiar - 1; i++)
+    /* Loop to find the sequence */
+    for (i = 0; i < size - 1; i++)
     {
-        if (tab[i] < tab[i + 1])
+        if (arr[i] < arr[i + 1])
         {
-            kon = i + 1;
-            dl = kon - poc;
+            end = i + 1;
+            length = end - start;
 
-            if (dl >= podciag.dlugosc)
+            if (length >= subsequence.length)
             {
-                podciag.dlugosc = dl + 1;
-                podciag.koniec = kon;
-                podciag.poczatek = poc;
+                subsequence.length = length + 1;
+                subsequence.end = end;
+                subsequence.start = start;
             }
         }
         else
-            poc = i + 1;
+            start = i + 1;
     }
-    printf("\nNajdluzszy podciag to: ");
-    for (i = podciag.poczatek; i <= podciag.koniec; i++)
+    printf("\nLongest subsequence: ");
+    for (i = subsequence.start; i <= subsequence.end; i++)
     {
-        printf("%d,", tab[i]);
+        printf("%d,", arr[i]);
     }
-    printf("\nPoczatek = %d, koniec = %d, dlugosc = %d\n", podciag.poczatek, podciag.koniec, podciag.dlugosc);
+    printf("\nStart = %d, end = %d, length = %d\n", subsequence.start, subsequence.end, subsequence.length);
 }
